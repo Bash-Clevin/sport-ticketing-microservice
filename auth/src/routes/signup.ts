@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
+import { RequestValidationError } from '../errors/request-validation-error';
+import { User } from '../models/user';
 
 const router = express.Router();
 
@@ -12,18 +14,26 @@ router.post(
       .isLength({ min: 6 })
       .withMessage('Password should be longer than 6 characters'),
   ],
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.status(400).send(errors.array());
+      throw new RequestValidationError(errors.array());
     }
 
     const { email, password } = req.body;
 
-    console.log('Creating a user...');
+    const existingUser = await User.findOne({ email });
 
-    res.send({});
+    if (existingUser) {
+      console.log('Email is in use');
+      return res.send({});
+    }
+
+    const user = User.build({ email, password });
+    await user.save();
+
+    res.status(201).send(user);
   },
 );
 

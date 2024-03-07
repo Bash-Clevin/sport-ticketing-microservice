@@ -21,6 +21,7 @@ const useRequest = ({ url, method, body }: RequestConfig): UseRequestResult => {
 
   const doRequest = async (): Promise<any> => {
     try {
+      setErrors(null);
       const response = await axios[method](url, body);
       return response.data;
     } catch (error) {

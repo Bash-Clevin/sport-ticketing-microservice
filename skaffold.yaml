@@ -25,3 +25,11 @@ build:
         manual:
           - dest: .
             src: 'src/**/*.ts'
+    - image: clevinbash/tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: 'src/**/*.ts'

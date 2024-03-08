@@ -1,11 +1,14 @@
 'use client';
 
 import useRequest from '@/hooks/use-request';
+import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 
 export default function Signup() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const router = useRouter();
+
   const { doRequest, errors } = useRequest({
     url: '/api/users/signup',
     method: 'post',
@@ -13,6 +16,7 @@ export default function Signup() {
       email,
       password,
     },
+    onSuccess: () => router.push('/'),
   });
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {

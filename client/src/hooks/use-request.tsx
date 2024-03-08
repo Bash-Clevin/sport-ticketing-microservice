@@ -9,6 +9,7 @@ interface RequestConfig {
   url: string;
   method: Method;
   body?: any;
+  onSuccess?: (data: any) => void;
 }
 
 interface UseRequestResult {
@@ -16,13 +17,20 @@ interface UseRequestResult {
   errors: JSX.Element | null;
 }
 
-const useRequest = ({ url, method, body }: RequestConfig): UseRequestResult => {
+const useRequest = ({
+  url,
+  method,
+  body,
+  onSuccess,
+}: RequestConfig): UseRequestResult => {
   const [errors, setErrors] = useState<JSX.Element | null>(null);
 
   const doRequest = async (): Promise<any> => {
     try {
       setErrors(null);
       const response = await axios[method](url, body);
+
+      if (onSuccess) onSuccess(response.data);
       return response.data;
     } catch (error) {
       const errorResponse: ErrorResponse[] = error.response?.data.errors || [];
@@ -36,7 +44,6 @@ const useRequest = ({ url, method, body }: RequestConfig): UseRequestResult => {
           </ul>
         </div>,
       );
-      throw error; // Re-throwing the error to handle it elsewhere if needed
     }
   };
 

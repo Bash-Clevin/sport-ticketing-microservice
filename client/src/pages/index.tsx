@@ -1,28 +1,21 @@
-import axios from 'axios';
+import buildClient from '@/api/build-client';
 
-interface ServerResponse {
-  currentUser: string | null;
-}
+import { GetServerSidePropsContext } from 'next';
 
-export async function getServerSideProps({ req }) {
-  if (typeof window === 'undefined') {
-    const { data } = await axios.get(
-      'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local/api/users/currentuser',
-      {
-        headers: req.headers,
-      },
-    );
+export async function getServerSideProps({ req }: GetServerSidePropsContext) {
+  try {
+    const { data } = await buildClient({ req }).get('/api/users/currentuser');
     return { props: { data } };
-  } else {
-    const { data } = await axios.get('/api/users/currentuser');
-    return { props: { data } };
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return { props: {} };
   }
 }
 
 export default function Home({ data }) {
-  return (
-    <main>
-      <h1 className="text-danger">Hello Bootstrap</h1>
-    </main>
+  return data.currentUser ? (
+    <h1>You are signed in</h1>
+  ) : (
+    <h1>You are not signed in</h1>
   );
 }

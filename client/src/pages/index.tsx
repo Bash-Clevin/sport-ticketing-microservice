@@ -1,4 +1,5 @@
 import buildClient from '@/api/build-client';
+import 'bootstrap/dist/css/bootstrap.css';
 
 import { GetServerSidePropsContext } from 'next';
 

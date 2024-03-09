@@ -2,7 +2,8 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import express from 'express';
 import 'express-async-errors';
-import { NotFoundError, errorHandler } from '@clevinbash/library';
+import { NotFoundError, errorHandler, currentUser } from '@clevinbash/library';
+import { createTicketRouter } from './routes/new-ticket';
 
 const app = express();
 app.set('trust proxy', true);
@@ -13,6 +14,10 @@ app.use(
     secure: process.env.NODE_ENV !== 'test',
   }),
 );
+
+app.use(currentUser);
+
+app.use(createTicketRouter);
 
 app.all('*', async () => {
   throw new NotFoundError();

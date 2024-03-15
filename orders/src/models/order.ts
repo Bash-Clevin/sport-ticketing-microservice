@@ -2,6 +2,8 @@ import { OrderStatus } from '@clevinbash/library';
 import mongoose from 'mongoose';
 import { TicketDoc } from './ticket';
 
+export { OrderStatus };
+
 interface OrderAttributes {
   userId: string;
   status: OrderStatus;

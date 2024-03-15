@@ -14,9 +14,15 @@ export abstract class Publisher<T extends Event> {
     this.stan = stan;
   }
 
-  publish(data: T['data']) {
-    this.stan.publish(this.subject, JSON.stringify(data), () => {
-      console.log('Event published.');
+  publish(data: T['data']): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.stan.publish(this.subject, JSON.stringify(data), (err) => {
+        if (err) {
+          return reject(err);
+        }
+        console.log(`Event published to subject: ${this.subject}`);
+        resolve();
+      });
     });
   }
 }

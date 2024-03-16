@@ -14,9 +14,9 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
       throw new Error('Ticket not found');
     }
 
-    const { title, price } = data;
+    const { title, price, version } = data;
 
-    ticket.set({ title, price });
+    ticket.set({ title, price, version });
     await ticket.save();
 
     msg.ack();
